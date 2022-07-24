@@ -1,5 +1,13 @@
 #include <esp_now.h>
 #include <WiFi.h>
+#include "config.hpp"
+#include "stepper_motor.h"
+
+
+#define POS_RIGHT 1
+#define POS_LEFT 2
+#define POS_CENTER 0
+uint8_t wheel_pos = 0;
 
 // Structure example to receive data
 // Must match the sender structure
@@ -29,33 +37,80 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println();
 
 
-  if (myData.forward == true) {
-    digitalWrite(5, HIGH);
-  }
-  else {
-    digitalWrite(5, LOW);
-  }
 
-  if (myData.backward == true) {
-    digitalWrite(19, HIGH);
-  }
-  else {
-    digitalWrite(19, LOW);
-  }
+	//both forward and backward are pressed or not pressed
+	if ((myData.forward && myData.backward) || (!myData.forward && !myData.backward)){
+		digitalWrite(FORWARD_PIN,  LOW);
+		digitalWrite(BACKWARD_PIN, LOW);
+	}
 
-  if (myData.right == true) {
-    digitalWrite(1, HIGH);
-  }
-  else {
-    digitalWrite(1, LOW);
-  }
+	//forward is pressed and back is not
+	if (myData.forward && !myData.backward){
+		digitalWrite(FORWARD_PIN,  HIGH);
+		digitalWrite(BACKWARD_PIN, LOW);
+	}
 
-  if (myData.left == true) {
-    digitalWrite(0, HIGH);
-  }
-  else {
-    digitalWrite(0, LOW);
-  }
+	//backward is pressed forward is not
+	if (!myData.forward && myData.backward){
+		digitalWrite(FORWARD_PIN,  LOW);
+		digitalWrite(BACKWARD_PIN, HIGH);
+	}
+
+	//right is pushed, left is not
+  if (myData.right && !myDate.left) {
+	switch (wheel_pos){
+		case POS_RIGHT:
+			break;
+		case POS_LEFT:
+			turn_right();
+			turn_right();
+			break;
+		case POS_CENTER:
+			turn_right();
+			break;
+		defualt:
+			break;
+	}//end switch wheel_pos
+	wheel_pos = POS_RIGHT;
+  } //endif right=true, left=false
+
+
+
+
+	//both left and right are pressed or neither are pressed
+	if ((myData.right && myData.left) || (!myData.right && !myData.left)){
+		switch (wheel_pos){
+			case POS_RIGHT:
+				turn_left();
+				break;
+			case POS_LEFT:
+				turn_right();
+				break;
+			case POS_CENTER:
+				break;
+			defualt:
+				break;
+		}//end switch wheel_pos
+		wheel_pos = POS_CENTER;
+	}
+
+	//left is pressed, right is not
+	if (!myData.right && myData.left){
+		switch (wheel_pos){
+			case POS_RIGHT:
+				turn_left();
+				turn_left();
+				break;
+			case POS_LEFT:
+				break;
+			case POS_CENTER:
+				turn_left();
+				break;
+			defualt:
+				break;
+		}//end switch wheel_pos
+		wheel_pos = POS_LEFT;
+	}
 }
  
 void setup() {
@@ -76,10 +131,10 @@ void setup() {
   esp_now_register_recv_cb(OnDataRecv);
 
 
-  pinMode(5, OUTPUT);  //forward
-  pinMode(19, OUTPUT); //backward
-  pinMode(1, OUTPUT);  //right
-  pinMode(0, OUTPUT);  //left
+  pinMode(FORWARD_PIN, OUTPUT);  //forward
+  pinMode(BACKWARD_PIN, OUTPUT); //backward
+  pinMode(RIGHT_PIN, OUTPUT);  //right
+  pinMode(LEFT_PIN, OUTPUT);  //left
 }
  
 void loop() {
