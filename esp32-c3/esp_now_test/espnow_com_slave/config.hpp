@@ -27,6 +27,6 @@
 #endif
 
 //for stepper motor stuff
-#define MOTOR_CYCLE_COUNT 34
+#define MOTOR_CYCLE_COUNT 60
 
 #endif //CONFIG_H

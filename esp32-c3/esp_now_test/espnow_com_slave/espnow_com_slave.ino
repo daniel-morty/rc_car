@@ -1,7 +1,7 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include "config.hpp"
-#include "stepper_motor.h"
+#include "stepper_motor.hpp"
 
 
 #define POS_RIGHT 1
@@ -57,7 +57,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 	}
 
 	//right is pushed, left is not
-  if (myData.right && !myDate.left) {
+  if (myData.right && !myData.left) {
 	switch (wheel_pos){
 		case POS_RIGHT:
 			break;
@@ -68,7 +68,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 		case POS_CENTER:
 			turn_right();
 			break;
-		defualt:
+		default:
 			break;
 	}//end switch wheel_pos
 	wheel_pos = POS_RIGHT;
@@ -88,7 +88,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 				break;
 			case POS_CENTER:
 				break;
-			defualt:
+			default:
 				break;
 		}//end switch wheel_pos
 		wheel_pos = POS_CENTER;
@@ -106,7 +106,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 			case POS_CENTER:
 				turn_left();
 				break;
-			defualt:
+			default:
 				break;
 		}//end switch wheel_pos
 		wheel_pos = POS_LEFT;
@@ -133,8 +133,10 @@ void setup() {
 
   pinMode(FORWARD_PIN, OUTPUT);  //forward
   pinMode(BACKWARD_PIN, OUTPUT); //backward
-  pinMode(RIGHT_PIN, OUTPUT);  //right
-  pinMode(LEFT_PIN, OUTPUT);  //left
+  pinMode(N_ONE, OUTPUT); //backward
+  pinMode(N_TWO, OUTPUT); //backward
+  pinMode(N_THREE, OUTPUT); //backward
+  pinMode(N_FOUR, OUTPUT); //backward
 }
  
 void loop() {
