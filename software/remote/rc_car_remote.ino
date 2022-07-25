@@ -3,6 +3,7 @@
 
 // REPLACE WITH YOUR RECEIVER MAC Address
 uint8_t broadcastAddress[] = {0x34, 0xB4, 0x72, 0x4D, 0xCB, 0x90};
+//TODO add the MAC address of the esp8266
 
 // Structure example to send data
 // Must match the receiver structure
@@ -52,15 +53,14 @@ void setup() {
     return;
   }
 
-
-  pinMode(1, INPUT_PULLUP);
-  pinMode(2, INPUT_PULLUP);
-  pinMode(3, INPUT_PULLUP);
-  pinMode(4, INPUT_PULLUP);
+  pinMode(RIGHT_PIN   , INPUT_PULLUP);
+  pinMode(FORWARD_PIN , INPUT_PULLUP);
+  pinMode(LEFT_PIN    , INPUT_PULLUP);
+  pinMode(BACKWARD_PIN, INPUT_PULLUP);
 }
  
 void loop() {
-  if (!digitalRead(1)) {
+  if (!digitalRead(RIGHT_PIN)) {
     Serial.println("right");
     myData.right = true;
   }
@@ -68,7 +68,7 @@ void loop() {
     myData.right = false;
   }
 
-  if (!digitalRead(2)) {
+  if (!digitalRead(FORWARD_PIN)) {
     Serial.println("forward");
     myData.forward = true;
   }
@@ -76,7 +76,7 @@ void loop() {
     myData.forward = false;
   }
 
-  if (!digitalRead(3)) {
+  if (!digitalRead(BACKWARD_PIN)) {
     Serial.println("backward");
     myData.backward = true;
   }
@@ -84,7 +84,7 @@ void loop() {
     myData.backward = false;
   }
 
-  if (!digitalRead(4)) {
+  if (!digitalRead(LEFT_PIN)) {
     Serial.println("left");
     myData.left = true;
   }
