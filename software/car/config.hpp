@@ -15,11 +15,8 @@
 
 
 #ifdef esp8266
-//TODO define these pins to better values
 	#define FORWARD_PIN		2 
 	#define BACKWARD_PIN	0
-	#define RIGHT_PIN		4
-	#define LEFT_PIN		5
 	#define N_ONE			14
 	#define N_TWO			12
 	#define N_THREE			13
